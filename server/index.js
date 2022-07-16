@@ -5,32 +5,27 @@ const cors = require("cors");
 const {Server} = require("socket.io");
 app.use(cors());
 
-
 const server = http.createServer(app);
-
 const io = new Server(server,{
-   cors: {
+   cors:{
         origin:"http://localhost:3000",
         methods:["GET","POST"],
    },
 });
 
 io.on("connection",(socket) =>{
-   // socket = io.listen(server);
-    console.log(`User connected : ${socket.id}`);
-
-    socket.on("join_room",(data) => {
-      socket.join(data);
-      console.log(`user : ${socket.id}  joined room : ${data}`);
-    })
-    socket.on("send_message", (data) => {
-       console.log(data);
-       //socket.to(data.room).emit("receive_message",data);
-    })
-
-    socket.on("disconnect", () => {
-        console.log("User disconnected", socket.id);
-    })
+   console.log(`User connected : ${socket.id}`);
+   socket.on("join_room",(data) => {
+   socket.join(data);
+   console.log(`user : ${socket.id}  joined room : ${data}`);
+   })
+   socket.on("send_message", (data) => {
+     console.log(data);
+     socket.to(data.room).emit("receive_message",data);
+   })
+   socket.on("disconnect", () => {
+     console.log("User disconnected", socket.id);
+   })
  })
  server.listen(8000,() => {
     console.log("Server chal gya");
